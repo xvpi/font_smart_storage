@@ -11,25 +11,22 @@
 			}
 		},
 		{
-			"path" : "pages/myinfo/login",
-			"style" : 
-			{
-				"navigationBarTitleText" : "登录",
+			"path": "pages/myinfo/login",
+			"style": {
+				"navigationBarTitleText": "登录",
 				"enablePullDownRefresh": false
 			}
 		},
 		{
-			"path" : "pages/myinfo/register",
-			"style" : 
-			{
-				"navigationBarTitleText" : "注册"
+			"path": "pages/myinfo/register",
+			"style": {
+				"navigationBarTitleText": "注册"
 			}
 		},
 		{
-			"path" : "pages/myinfo/myinfo",
-			"style" : 
-			{
-				"navigationBarTitleText" : "我的"
+			"path": "pages/myinfo/myinfo",
+			"style": {
+				"navigationBarTitleText": "我的"
 			}
 		},
 		// {
@@ -40,49 +37,46 @@
 		// 	}
 		// },
 		{
-			"path" : "pages/sumup/sumup",
-			"style" : 
-			{
-				"navigationBarTitleText" : "总结汇报"
+			"path": "pages/sumup/sumup",
+			"style": {
+				"navigationBarTitleText": "总结汇报"
 			}
 		},
 		{
-			"path" : "pages/index/addup",
-			"style" : 
-			{
-				"navigationBarTitleText" : "添加事物"
+			"path": "pages/index/addup",
+			"style": {
+				"navigationBarTitleText": "添加事物"
 			}
 		},
 		{
-			"path" : "pages/index/editItem",
-			"style" : 
-			{
-				"navigationBarTitleText" : "编辑物品"
+			"path": "pages/index/editItem",
+			"style": {
+				"navigationBarTitleText": "编辑物品"
 			}
 		},
 		{
-			"path" : "pages/index/optimize",
-			"style" : 
-			{
-				"navigationBarTitleText" : "优化"
+			"path": "pages/index/optimize",
+			"style": {
+				"navigationBarTitleText": "优化"
 			}
 		},
 		{
-			"path" : "pages/index/editArea",
-			"style" : 
-			{
-				"navigationBarTitleText" : "编辑区域"
-			"path" : "pages/myinfo/setting",
-			"style" : 
-			{
-				"navigationBarTitleText" : "设置"
+			"path": "pages/index/editArea",
+			"style": {
+				"navigationBarTitleText": "编辑区域"
 			}
 		},
 		{
-			"path" : "pages/myinfo/question",
-			"style" : 
-			{
-				"navigationBarTitleText" : "常见问题"
+
+			"path": "pages/myinfo/setting",
+			"style": {
+				"navigationBarTitleText": "设置"
+			}
+		},
+		{
+			"path": "pages/myinfo/question",
+			"style": {
+				"navigationBarTitleText": "常见问题"
 			}
 		},
 		{
@@ -91,27 +85,24 @@
 				"navigationBarTitleText": "选择你的头像",
 				"enablePullDownRefresh": false
 			}
-		
+
 		},
 		{
-			"path" : "pages/myinfo/family",
-			"style" : 
-			{
-				"navigationBarTitleText" : "家庭成员"
+			"path": "pages/myinfo/family",
+			"style": {
+				"navigationBarTitleText": "家庭成员"
 			}
 		},
 		{
-			"path" : "pages/myinfo/account",
-			"style" : 
-			{
-				"navigationBarTitleText" : "账号安全"
+			"path": "pages/myinfo/account",
+			"style": {
+				"navigationBarTitleText": "账号安全"
 			}
 		},
 		{
-			"path" : "pages/myinfo/theme",
-			"style" : 
-			{
-				"navigationBarTitleText" : "主题"
+			"path": "pages/myinfo/theme",
+			"style": {
+				"navigationBarTitleText": "主题"
 			}
 		}
 	],
@@ -122,25 +113,25 @@
 		"backgroundColor": "#F8F8F8"
 	},
 	"tabBar": {
-	    "color": "#7A7E83",
-	    "selectedColor": "#303133",
-	    "borderStyle": "black",
-	    "backgroundColor": "#ffffff",
-	    "list": [{
-	        "pagePath": "pages/sumup/sumup",
-	        "iconPath": "static/sumup0.png",
-	        "selectedIconPath": "static/sumup1.png",
-	        "text": "总结"
-	    },{
-	        "pagePath": "pages/index/index",
-	        "iconPath": "static/home.png",
-	        "selectedIconPath": "static/home_selected.png",
-	        "text": "首页"
-	    }, {
-	        "pagePath": "pages/myinfo/myinfo",
-	        "iconPath": "static/my.png",
-	        "selectedIconPath": "static/my_selected.png",
-	        "text": "我的"
-	    }]
+		"color": "#7A7E83",
+		"selectedColor": "#303133",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [{
+			"pagePath": "pages/sumup/sumup",
+			"iconPath": "static/sumup0.png",
+			"selectedIconPath": "static/sumup1.png",
+			"text": "总结"
+		}, {
+			"pagePath": "pages/index/index",
+			"iconPath": "static/home.png",
+			"selectedIconPath": "static/home_selected.png",
+			"text": "首页"
+		}, {
+			"pagePath": "pages/myinfo/myinfo",
+			"iconPath": "static/my.png",
+			"selectedIconPath": "static/my_selected.png",
+			"text": "我的"
+		}]
 	}
 }
