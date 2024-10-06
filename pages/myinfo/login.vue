@@ -7,11 +7,11 @@
 			<!-- 写item -->
 			<!-- 写姓名栏 -->
 			<u-form-item left-icon="account" label-width="120" label="账号" prop="name">
-				<u-input placeholder="请输⼊账号" v-model="user.zhanghao" type="text"></u-input>
+				<u-input placeholder="请输入用户名" v-model="user.zhanghao" type="text"></u-input>
 			</u-form-item>
 			<!-- 写密码栏 -->
 			<u-form-item left-icon="lock" label-width="120" label="密码" prop="password">
-				<u-input :password-icon="true" type="password" v-model="user.mima" placeholder="请输⼊密码"></u-input>
+				<u-input :password-icon="true" type="password" v-model="user.mima" placeholder="请输入密码"></u-input>
 			</u-form-item>
 			<!-- 此处switch的slot为right，如果不填写slot名，也即<u-switch vmodel="model.remember"></u-switch>，将会左对⻬ -->
 			<u-form-item label="记住密码" prop="remember" label-width="150">
@@ -20,7 +20,7 @@
 		</u-form>
 		<u-button @click="submit()">提交</u-button>
 		<u-button @click="goRegister()">注册</u-button>
-		<u-link :href="href">帮助文档</u-link>
+		<!-- <u-link :href="href">帮助文档</u-link> -->
 		<!-- 前面加冒号，说明填写的是变量 -->
 	</view>
 </template>
@@ -29,7 +29,7 @@
 		data() {
 			return {
 				// 变量定义
-				href: "http://www.uviewui.com",
+				// href: "http://www.uviewui.com",
 				//定义一个对象来放user信息,用于跨文件取用,保证双向一致v-model
 				user: {}
 			}

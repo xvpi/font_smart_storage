@@ -5,8 +5,8 @@
 		<u-form :model="user" ref="uForm">
 			<!-- 写item -->
 			<!-- 写姓名 -->
-			<u-form-item label-width="150" label="姓名" prop="xingming">
-				<u-input placeholder="请输入姓名" v-model="user.xingming" type="text"></u-input>
+			<u-form-item label-width="150" label="昵称" prop="xingming">
+				<u-input placeholder="请输入昵称" v-model="user.xingming" type="text"></u-input>
 			</u-form-item>
 			<!-- 写用户栏 -->
 			<u-form-item label-width="150" label="用户名" prop="zhanghao">
@@ -20,19 +20,19 @@
 			<u-form-item label-width="150" label="确认密码" prop="Tpassword">
 				<u-input :password-icon="true" type="password" v-model="user.rmima" placeholder="请再次确认密码"></u-input>
 			</u-form-item>
-			<u-form-item label-width="150" label="年龄" prop="age">
+			<!-- <u-form-item label-width="150" label="年龄" prop="age">
 				<u-input type="number" v-model="user.age" placeholder="请输入年龄"></u-input>
-			</u-form-item>
-			<u-form-item label-width="140" label-position="left" label="用户类别" prop="leibie">
+			</u-form-item> -->
+			<!-- <u-form-item label-width="140" label-position="left" label="用户类别" prop="leibie">
 				<u-radio-group v-model="user.leibie" @change="radioGroupChange">
 					<u-radio @change="radioChange" v-for="(item, index) in list" :key="index" :name="item.val"
 						:disabled="item.disabled">
 						{{item.txt}}
 					</u-radio>
 				</u-radio-group>
-			</u-form-item>
+			</u-form-item> -->
 			<u-button @click="submit()">提交</u-button>
-			<u-link :href="href">帮助文档</u-link>
+			<!-- <u-link :href="href">帮助文档</u-link> -->
 			<!-- 前面加冒号，说明填写的是变量 -->
 		</u-form>
 	</view>
