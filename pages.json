@@ -32,13 +32,13 @@
 				"navigationBarTitleText" : "我的"
 			}
 		},
-		{
-			"path" : "pages/myinfo/revise",
-			"style" : 
-			{
-				"navigationBarTitleText" : "修改信息"
-			}
-		},
+		// {
+		// 	"path" : "pages/myinfo/revise",
+		// 	"style" : 
+		// 	{
+		// 		"navigationBarTitleText" : "修改信息"
+		// 	}
+		// },
 		{
 			"path" : "pages/sumup/sumup",
 			"style" : 
@@ -51,6 +51,49 @@
 			"style" : 
 			{
 				"navigationBarTitleText" : "添加事物"
+			}
+		},
+		{
+			"path" : "pages/myinfo/setting",
+			"style" : 
+			{
+				"navigationBarTitleText" : "设置"
+			}
+		},
+		{
+			"path" : "pages/myinfo/question",
+			"style" : 
+			{
+				"navigationBarTitleText" : "常见问题"
+			}
+		},
+		{
+			"path": "pages/myinfo/selectheadpic",
+			"style": {
+				"navigationBarTitleText": "选择你的头像",
+				"enablePullDownRefresh": false
+			}
+		
+		},
+		{
+			"path" : "pages/myinfo/family",
+			"style" : 
+			{
+				"navigationBarTitleText" : "家庭成员"
+			}
+		},
+		{
+			"path" : "pages/myinfo/account",
+			"style" : 
+			{
+				"navigationBarTitleText" : "账号安全"
+			}
+		},
+		{
+			"path" : "pages/myinfo/theme",
+			"style" : 
+			{
+				"navigationBarTitleText" : "主题"
 			}
 		}
 	],
