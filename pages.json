@@ -52,6 +52,27 @@
 			{
 				"navigationBarTitleText" : "添加事物"
 			}
+		},
+		{
+			"path" : "pages/index/editItem",
+			"style" : 
+			{
+				"navigationBarTitleText" : "编辑物品"
+			}
+		},
+		{
+			"path" : "pages/index/optimize",
+			"style" : 
+			{
+				"navigationBarTitleText" : "优化"
+			}
+		},
+		{
+			"path" : "pages/index/editArea",
+			"style" : 
+			{
+				"navigationBarTitleText" : "编辑区域"
+			}
 		}
 	],
 	"globalStyle": {

@@ -1,5 +1,4 @@
 <template>
-	<!-- 修改测试 -->
   <view class='container'>
     <!-- 搜索框区域 -->
     <view class="search-box">
@@ -32,7 +31,8 @@
     <!-- 主体内容展示 -->
     <view v-if="currentTab === 'items'">
       <view class="item-list">
-        <view class="item" v-for="(item, index) in items" :key="index" @click="navigateToItemDetail(item)">
+        <view class="item" v-for="(item, index) in items" :key="index" @click="navigateToEditItem(item)">
+		<image :src="item.photo" />
           <text>{{ item.name }}</text>
         </view>
       </view>
@@ -40,12 +40,15 @@
 
     <view v-else>
       <view class="area-list">
-        <view class="area" v-for="(area, index) in areas" :key="index" @click="navigateToAreaDetail(area)">
+        <view class="area" v-for="(area, index) in areas" :key="index" @click="navigateToEditArea(area)">
           <image :src="area.photo" />
           <text>{{ area.name }}</text>
         </view>
       </view>
     </view>
+	<view @click="goAddup" class="floating-icon">
+		<u-icon name="plus" size="40" color="#c7ddff"></u-icon>
+	</view>
   </view>
 </template>
 
@@ -57,8 +60,8 @@ export default {
       searchQuery: '',  // 搜索框的输入内容
       searchResults: [],  // 搜索结果
       currentTab: 'items',  // 当前展示的标签: 'items' 或 'areas'
-      items: [ { id: 1, name: '物品1' },
-        { id: 2, name: '物品2' }],  // 物品列表
+      items: [ { id: 1, name: '物品1', photo: '/static/test/wupin1.png' },
+        { id: 2, name: '物品2' , photo: '/static/test/wupin2.png'}],  // 物品列表
       areas: [{ id: 1, name: '区域1', photo: '/static/test/quyu1.png' },
         { id: 2, name: '区域2', photo: '/static/test/quyu2.png' }]  // 区域列表
     };
@@ -116,12 +119,6 @@ export default {
         { id: 2, name: '区域2', photo: '/static/test/quyu2.png' }
       ];
     },
-    // 跳转到物品详情页
-    navigateToItemDetail(item) {
-      uni.navigateTo({
-        url: `/pages/itemDetail/itemDetail?id=${item.id}`
-      });
-    },
     // 跳转到区域详情页
     navigateToAreaDetail(area) {
       uni.navigateTo({
@@ -131,9 +128,28 @@ export default {
     // 跳转到优化页面
     navigateToOptimizePage() {
       uni.navigateTo({
-        url: '/pages/optimize/optimize'
+        url: '/pages/index/optimize'
       });
-    }
+    },
+	// 跳转到编辑物品页面
+	navigateToEditItem(item) {
+	  uni.navigateTo({
+	    url: `/pages/index/editItem?id=${item.id}`
+	  });
+	},
+	// 跳转到编辑区域页面
+	navigateToEditArea(area) {
+	  uni.navigateTo({
+	    url: `/pages/index/editArea?id=${area.id}`
+	  });
+	},
+	//
+	goAddup() {
+		uni.navigateTo({
+			url: '/pages/index/addup' // 替换为你实际的页面路径
+		});
+	},
+
   }
 };
 </script>
@@ -217,9 +233,25 @@ export default {
   align-items: center;
 }
 
-.area image {
+.area image, .item image {
   width: 100px;
   height: 100px;
   margin-right: 10px;
 }
+
+.floating-icon {
+		position: fixed;
+		bottom: 80px;
+		right: 10px;
+		width: 50px;
+		height: 50px;
+		background-color: #007aff;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+		z-index: 1000;
+		cursor: pointer;
+	}
 </style>
