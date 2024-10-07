@@ -1,54 +1,68 @@
 <template>
   <view class='container'>
-    <!-- 搜索框区域 -->
-    <view class="search-box">
-      <input type="text" placeholder="搜索物品..." v-model="searchQuery" />
-      <button @click="searchItems">搜索</button>
-      <image class="icon" src="/static/index/optimize.png" @click="navigateToOptimizePage" />
+    <view>
+      <u-tabs :list="tabList" :is-scroll="false" :current="currentTabIndex" @change="changeTab"></u-tabs>
     </view>
 
-    <!-- 滚动提醒区域 -->
+    <view class="search-box">
+      <input type="text" :placeholder="searchPlaceholder" v-model="searchQuery" />
+      <button @click="search">搜索</button>
+    </view>
+
     <view class="center">
       <u-toast :type="type" ref="uToast"></u-toast>
-      <u-notice-bar :autoplay="true" :playState="play" :speed="160" :mode="horizontal" :type="warning"
-        :list="this.infoList" :moreIcon="false" :volumeIcon="true" :duration="2000" :isCircular="false">
-      </u-notice-bar>
+      <u-notice-bar :list="infoList" :autoplay="true" :playState="play" :speed="160" />
     </view>
 
-    <!-- 标签索引区域 -->
-    <view class="tab">
-      <button :class="{ active: currentTab === 'items' }" @click="currentTab = 'items'">物品</button>
-      <button :class="{ active: currentTab === 'areas' }" @click="currentTab = 'areas'">区域</button>
-    </view>
-
-    <!-- 搜索结果区域 -->
-    <view v-if="searchResults.length > 0" class="search-results">
-      <view v-for="(item, index) in searchResults" :key="index" @click="navigateToDetailPage(item)">
-        <text>{{ item.name }}</text>
-      </view>
-    </view>
-
-    <!-- 主体内容展示 -->
     <view v-if="currentTab === 'items'">
-      <view class="item-list">
-        <view class="item" v-for="(item, index) in items" :key="index" @click="navigateToEditItem(item)">
-		<image :src="item.photo" />
+      <view v-if="searchResults.length > 0" class="search-results">
+        <view v-for="item in searchResults" :key="item.id" @click="navigateToEditItem(item)">
           <text>{{ item.name }}</text>
         </view>
       </view>
-    </view>
-
-    <view v-else>
-      <view class="area-list">
-        <view class="area" v-for="(area, index) in areas" :key="index" @click="navigateToEditArea(area)">
-          <image :src="area.photo" />
-          <text>{{ area.name }}</text>
+      <view class="item-list">
+        <view class="item" v-for="item in items" :key="item.id" @click="navigateToEditItem(item)">
+          <text>{{ item.name }}</text>
+          <text>{{ item.position }}</text>
+          <text>{{ item.quantity }}</text>
         </view>
       </view>
     </view>
-	<view @click="goAddup" class="floating-icon">
-		<u-icon name="plus" size="40" color="#c7ddff"></u-icon>
-	</view>
+
+    <view v-if="currentTab === 'containers'">
+      <view v-if="searchResults.length > 0" class="search-results">
+        <view v-for="container in searchResults" :key="container.id" @click="navigateToContainerDetail(container)">
+          <text>{{ container.name }}</text>
+        </view>
+      </view>
+      <view class="container-list">
+        <view class="container" v-for="container in containers" :key="container.id" @click="navigateToContainerDetail(container)">
+          <text>{{ container.name }}</text>
+          <text>{{ container.items.length }} 个物品</text>
+        </view>
+      </view>
+    </view>
+
+    <view v-if="currentTab === 'rooms'">
+      <view v-if="searchResults.length > 0" class="search-results">
+        <view v-for="room in searchResults" :key="room.id" @click="navigateToRoomDetail(room)">
+          <text>{{ room.name }}</text>
+        </view>
+      </view>
+      <view class="room-list">
+        <view class="room" v-for="room in rooms" :key="room.id" @click="navigateToRoomDetail(room)">
+          <text>{{ room.name }}</text>
+          <text>{{ room.containers.length }} 个容器</text>
+        </view>
+      </view>
+    </view>
+
+    <view @click="navigateToOptimizePage" class="floating-icon2">
+      <u-icon name="integral" size="40" color="#c7ddff"></u-icon>
+    </view>
+    <view @click="goAddup" class="floating-icon">
+      <u-icon name="plus" size="40" color="#c7ddff"></u-icon>
+    </view>
   </view>
 </template>
 
@@ -56,103 +70,83 @@
 export default {
   data() {
     return {
-      infoList: ['test1','test2'],  // 滚动消息
-      searchQuery: '',  // 搜索框的输入内容
-      searchResults: [],  // 搜索结果
-      currentTab: 'items',  // 当前展示的标签: 'items' 或 'areas'
-      items: [ { id: 1, name: '物品1', photo: '/static/test/wupin1.png' },
-        { id: 2, name: '物品2' , photo: '/static/test/wupin2.png'}],  // 物品列表
-      areas: [{ id: 1, name: '区域1', photo: '/static/test/quyu1.png' },
-        { id: 2, name: '区域2', photo: '/static/test/quyu2.png' }]  // 区域列表
+      infoList: [],
+      searchQuery: '',
+      searchResults: [],
+      currentTab: 'items',
+      items: [],
+      containers: [],
+      rooms: [],
+      tabList: [
+        { name: '物品' },
+        { name: '容器' },
+        { name: '房间' },
+      ],
+      currentTabIndex: 0, // 0: items, 1: containers, 2: rooms
     };
   },
-  onLoad() {
-    // 页面加载时获取滚动提醒
-    this.getNotices();
-    // 获取物品和区域数据
-    this.getItems();
-    this.getAreas();
+  computed: {
+    searchPlaceholder() {
+      return this.currentTab === 'items' ? '搜索物品...' :
+             this.currentTab === 'containers' ? '搜索容器...' : '搜索房间...';
+    }
+  },
+  mounted() {
+    this.fetchData();
+    this.fetchNotices();
   },
   methods: {
-    // 获取滚动提醒数据
-	fetchNotice() {
-		uni.request({
-			url: 'http://localhost:8090/index/fetchNotice', // 模拟后端接口URL  
-			success: (res) => {
-				if (res.data) {
-					// 假设后端返回的数据结构中有data字段包含通知列表  
-					this.infoList = [res.data.result];
-	
-				} else {
-					uni.showToast({
-						title: '获取通知失败',
-						icon: 'none'
-					});
-				}
-			},
-			fail: (err) => {
-				uni.showToast({
-					title: '网络请求失败',
-					icon: 'none'
-				});
-			}
-		});
-	},
-    // 搜索物品
-    searchItems() {
-      // 模拟搜索结果
-      this.searchResults = this.items.filter(item => item.name.includes(this.searchQuery));
+    fetchNotices() {
+      // 获取通知的API
     },
-    // 获取物品数据
+    fetchData() {
+      this.getItems();
+      this.getContainers();
+      this.getRooms();
+    },
     getItems() {
-      // 模拟后端数据
-      this.items = [
-        { id: 1, name: '物品1' },
-        { id: 2, name: '物品2' }
-      ];
+      // API调用获取物品
     },
-    // 获取区域数据
-    getAreas() {
-      // 模拟后端数据
-      this.areas = [
-        { id: 1, name: '区域1', photo: '/static/test/quyu1.png' },
-        { id: 2, name: '区域2', photo: '/static/test/quyu2.png' }
-      ];
+    getContainers() {
+      // API调用获取容器
     },
-    // 跳转到区域详情页
-    navigateToAreaDetail(area) {
-      uni.navigateTo({
-        url: `/pages/areaDetail/areaDetail?id=${area.id}`
-      });
+    getRooms() {
+      // API调用获取房间
     },
-    // 跳转到优化页面
+    search() {
+      if (this.currentTab === 'items') {
+        this.searchResults = this.items.filter(item => item.name.includes(this.searchQuery));
+      } else if (this.currentTab === 'containers') {
+        this.searchResults = this.containers.filter(container => container.name.includes(this.searchQuery));
+      } else if (this.currentTab === 'rooms') {
+        this.searchResults = this.rooms.filter(room => room.name.includes(this.searchQuery));
+      }
+    },
+    changeTab(index) {
+      this.currentTabIndex = index;
+      this.currentTab = this.tabList[index].name.toLowerCase(); // 'items', 'containers', 'rooms'
+      this.searchResults = []; // 清空搜索结果
+      this.searchQuery = ''; // 清空搜索框
+    },
+    navigateToEditItem(item) {
+      uni.navigateTo({ url: `/pages/index/editItem?id=${item.id}` });
+    },
+    navigateToContainerDetail(container) {
+      uni.navigateTo({ url: `/pages/index/containerDetail?id=${container.id}` });
+    },
+    navigateToRoomDetail(room) {
+      uni.navigateTo({ url: `/pages/index/roomDetail?id=${room.id}` });
+    },
     navigateToOptimizePage() {
-      uni.navigateTo({
-        url: '/pages/index/optimize'
-      });
+      uni.navigateTo({ url: '/pages/index/optimize' });
     },
-	// 跳转到编辑物品页面
-	navigateToEditItem(item) {
-	  uni.navigateTo({
-	    url: `/pages/index/editItem?id=${item.id}`
-	  });
-	},
-	// 跳转到编辑区域页面
-	navigateToEditArea(area) {
-	  uni.navigateTo({
-	    url: `/pages/index/editArea?id=${area.id}`
-	  });
-	},
-	//
-	goAddup() {
-		uni.navigateTo({
-			url: '/pages/index/addup' // 替换为你实际的页面路径
-		});
-	},
-
-  }
+    goAddup() {
+      uni.navigateTo({ url: '/pages/index/addup' });
+    },
+  },
 };
 </script>
+
 <style>
 .container {
   padding: 20px;
@@ -238,6 +232,22 @@ export default {
   height: 100px;
   margin-right: 10px;
 }
+
+.floating-icon2 {
+		position: fixed;
+		bottom: 140px;
+		right: 10px;
+		width: 50px;
+		height: 50px;
+		background-color: #007aff;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+		z-index: 1000;
+		cursor: pointer;
+	}
 
 .floating-icon {
 		position: fixed;
