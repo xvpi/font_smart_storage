@@ -205,8 +205,69 @@ Mock.mock(/\/api\/containers\/\d+/, 'get', (options) => {
         { id: 1, feature: '抗震功能' },
         { id: 2, feature: '防水功能' }
       ],
-      item: []
+      item: [
+		  {
+			  id: Mock.mock('@integer(1, 10)'),
+			  length: Mock.mock('@float(10, 100, 1, 2)'),
+			  width: Mock.mock('@float(10, 100, 1, 2)'),
+			  height: Mock.mock('@float(10, 100, 1, 2)'),
+			  position_x: Mock.mock('@float(0, 50, 1, 2)'),
+			  position_y: Mock.mock('@float(0, 50, 1, 2)'),
+			  position_z: Mock.mock('@float(0, 50, 1, 2)'),
+			  quantity: Mock.mock('@integer(1, 100)'),
+		  },{
+		  id: Mock.mock('@integer(1, 10)'),
+		  length: Mock.mock('@float(10, 100, 1, 2)'),
+		  width: Mock.mock('@float(10, 100, 1, 2)'),
+		  height: Mock.mock('@float(10, 100, 1, 2)'),
+		  position_x: Mock.mock('@float(0, 50, 1, 2)'),
+		  position_y: Mock.mock('@float(0, 50, 1, 2)'),
+		  position_z: Mock.mock('@float(0, 50, 1, 2)'),
+		  quantity: Mock.mock('@integer(1, 100)')}
+	  ]
     }
+  };
+});
+
+// 修改容器信息
+Mock.mock('/api/containers', 'put', (options) => {
+  return {
+    "code": 1,
+    "data": {
+      "container_id": 1,
+      "position_x": 150.0,
+      "position_y": 250.0,
+      "position_z": 350.0,
+      "length": 1100.0,
+      "width": 550.0,
+      "height": 550.0,
+      "room": {
+        "id": 1,
+        "name": "主仓库",
+        "length": 6000.0,
+        "width": 6000.0,
+        "height": 4000.0,
+        "positionX": 0.0,
+        "positionY": 0.0,
+        "positionZ": 0.0
+      },
+      "parent_id": 0,
+      "container_type": {
+        "id": 1,
+        "type": "储物柜"
+      },
+      "container_feature": [
+        {
+          "id": 1,
+          "feature": "防水"
+        },
+        {
+          "id": 2,
+          "feature": "耐高温"
+        }
+      ]
+    },
+    "message": "柜子信息更新成功"
   };
 });
 
@@ -328,7 +389,7 @@ Mock.mock('/api/query-room', 'post', () => {
   return {
     code: 1,
     data: {
-      rows: {
+      rows: [{
         id: Mock.Random.integer(1, 1000),
         name: Mock.Random.ctitle(5, 10),
         length: 6000.0,
@@ -378,11 +439,52 @@ Mock.mock('/api/query-room', 'post', () => {
                 ]
               }
             ]
-          }
+          },
+		  {
+		    id: 1,
+		    container_id: Mock.Random.integer(1, 1000),
+		    position_x: Mock.Random.float(0, 6000, 2, 2),
+		    position_y: Mock.Random.float(0, 6000, 2, 2),
+		    position_z: Mock.Random.float(0, 4000, 2, 2),
+		    length: Mock.Random.float(1000, 6000, 2, 2),
+		    width: Mock.Random.float(1000, 6000, 2, 2),
+		    height: Mock.Random.float(1000, 4000, 2, 2),
+		    parent_id: Mock.Random.integer(1, 1000),
+		    container_type: {
+		      id: 1,
+		      type: Mock.Random.word()
+		    },
+		    container_feature: [
+		      { id: 1, feature: Mock.Random.word() },
+		      { id: 2, feature: Mock.Random.word() }
+		    ],
+		    item: [
+		      {
+		        id: Mock.Random.integer(1, 1000),
+		        length: Mock.Random.float(1, 100, 2, 2),
+		        width: Mock.Random.float(1, 100, 2, 2),
+		        height: Mock.Random.float(1, 100, 2, 2),
+		        position_x: Mock.Random.float(0, 6000, 2, 2),
+		        position_y: Mock.Random.float(0, 6000, 2, 2),
+		        position_z: Mock.Random.float(0, 4000, 2, 2),
+		        quantity: Mock.Random.integer(1, 100),
+		        shape: {
+		          id: Mock.Random.integer(1, 10),
+		          shape: Mock.Random.word()
+		        },
+		        threshold: Mock.Random.integer(1, 100),
+		        container_id: Mock.Random.integer(1, 1000),
+		        feature: [
+		          { id: 1, feature: Mock.Random.word() },
+		          { id: 2, feature: Mock.Random.word() }
+		        ]
+		      }
+		    ]
+		  }
         ]
-      },
-      totalRowCount: 1,
-      totalPageCount: 2
+      }],
+      totalRowCount: 10,
+      totalPageCount: 1
     },
     message: "房间查询成功"
   };
@@ -441,7 +543,26 @@ Mock.mock('/api/query-container', 'post', () => {
                 { id: 1, feature: Mock.Random.word() },
                 { id: 2, feature: Mock.Random.word() }
               ]
-            }
+            },
+			{
+			  id: Mock.Random.integer(1, 1000),
+			  length: Mock.Random.float(1, 100, 2, 2),
+			  width: Mock.Random.float(1, 100, 2, 2),
+			  height: Mock.Random.float(1, 100, 2, 2),
+			  position_x: Mock.Random.float(0, 6000, 2, 2),
+			  position_y: Mock.Random.float(0, 6000, 2, 2),
+			  position_z: Mock.Random.float(0, 4000, 2, 2),
+			  quantity: Mock.Random.integer(1, 100),
+			  shape: {
+			    id: Mock.Random.integer(1, 10),
+			    shape: Mock.Random.word()
+			  },
+			  threshold: Mock.Random.integer(1, 100),
+			  feature: [
+			    { id: 1, feature: Mock.Random.word() },
+			    { id: 2, feature: Mock.Random.word() }
+			  ]
+			}
           ]
         }
       ],
@@ -486,11 +607,50 @@ Mock.mock('/api/query-item', 'post', () => {
             positionY: 0.0,
             positionZ: 0.0
           }
-        }
+        },
+		{
+		  id: Mock.Random.integer(1, 1000),
+		  length: Mock.Random.float(1, 100, 2, 2),
+		  width: Mock.Random.float(1, 100, 2, 2),
+		  height: Mock.Random.float(1, 100, 2, 2),
+		  position_x: Mock.Random.float(0, 6000, 2, 2),
+		  position_y: Mock.Random.float(0, 6000, 2, 2),
+		  position_z: Mock.Random.float(0, 4000, 2, 2),
+		  quantity: Mock.Random.integer(1, 100),
+		  shape: {
+		    id: Mock.Random.integer(1, 10),
+		    shape: Mock.Random.word()
+		  },
+		  threshold: Mock.Random.integer(1, 100),
+		  feature: [
+		    { id: 1, feature: Mock.Random.word() },
+		    { id: 2, feature: Mock.Random.word() }
+		  ],
+		  room: {
+		    id: Mock.Random.integer(1, 1000),
+		    name: Mock.Random.ctitle(5, 10),
+		    length: 6000.0,
+		    width: 6000.0,
+		    height: 4000.0,
+		    positionX: 0.0,
+		    positionY: 0.0,
+		    positionZ: 0.0
+		  }
+		}
       ],
       totalRowCount: 1,
       totalPageCount: 2
     },
     message: "查询物品信息成功"
+  };
+});
+
+
+// 模拟接口
+Mock.mock('/api/fetchNotices', 'get', (options) => {
+  return {
+    code: 200,
+    message: '获取通知成功',
+    data: 'mockData' // 返回模拟数据
   };
 });

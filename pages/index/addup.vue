@@ -179,6 +179,9 @@
 				containerFeatures: [] // 独立管理柜子特征
 			};
 		},
+		onLoad(options) {
+		  this.currentTab = Number(options.currentTab); // Ensure to convert to a number
+		},
 		methods: {
 			changeTab(index) {
 				this.currentTab = index; // 更新当前选中的标签索引

@@ -23,6 +23,8 @@
         <u-input v-model.number="room.positionZ" type="number" placeholder="请输入位置Z" />
       </u-form-item>
       <u-button type="primary" native-type="submit">更新房间信息</u-button>
+	  <u-button @click="cancel" style="margin-top: 20px;">取消修改</u-button>
+	  <text v-if="message" style="color: red;">{{ message }}</text>
     </u-form>
     <text v-if="message">{{ message }}</text>
   </view>
@@ -47,7 +49,7 @@ export default {
   },
   onLoad(options) {
     //this.fetchRoom(options.room_id); // 假设从路由中获取房间ID
-	this.fetchRoom(1); 
+	this.fetchRoom(options); 
   },
   methods: {
     fetchRoom(roomId) {
@@ -57,6 +59,7 @@ export default {
         success: (res) => {
           if (res.data.code === 1) {
             this.room = { ...res.data.data };
+			this.originalRoom = this.room; 
           } else {
             this.message = res.data.message;
           }
@@ -68,6 +71,10 @@ export default {
         }
       });
     },
+	cancel() {
+	  this.room = { ...this.originalRoom }; // 取消修改
+	  this.message = '修改已取消';
+	},
     updateRoom() {
       uni.request({
         url: '/api/rooms',

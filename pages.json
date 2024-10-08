@@ -63,7 +63,7 @@
 		{
 			"path": "pages/index/editArea",
 			"style": {
-				"navigationBarTitleText": "编辑区域"
+				"navigationBarTitleText": "编辑房间"
 			}
 		},
 		{
@@ -103,6 +103,27 @@
 			"path": "pages/myinfo/theme",
 			"style": {
 				"navigationBarTitleText": "主题"
+			}
+		},
+		{
+			"path" : "pages/index/containerDetail",
+			"style" : 
+			{
+				"navigationBarTitleText" : "容器详情"
+			}
+		},
+		{
+			"path" : "pages/index/roomDetail",
+			"style" : 
+			{
+				"navigationBarTitleText" : "房间详情"
+			}
+		},
+		{
+			"path" : "pages/index/editContainer",
+			"style" : 
+			{
+				"navigationBarTitleText" : "编辑容器"
 			}
 		}
 	],

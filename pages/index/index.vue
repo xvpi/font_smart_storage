@@ -1,5 +1,5 @@
 <template>
-  <view class='container'>
+  <view class='tcontainer'>
     <view>
       <u-tabs :list="tabList" :is-scroll="false" :current="currentTabIndex" @change="changeTab"></u-tabs>
     </view>
@@ -9,50 +9,57 @@
       <button @click="search">搜索</button>
     </view>
 
+    <!-- 滚动提醒区域 -->
     <view class="center">
       <u-toast :type="type" ref="uToast"></u-toast>
-      <u-notice-bar :list="infoList" :autoplay="true" :playState="play" :speed="160" />
+      <u-notice-bar :autoplay="true" :playState="play" :speed="160" :mode="horizontal" :type="warning"
+        :list="infoList" :moreIcon="false" :volumeIcon="true" :duration="2000" :isCircular="false">
+      </u-notice-bar>
     </view>
 
+    <!-- 物品展示 -->
     <view v-if="currentTab === 'items'">
       <view v-if="searchResults.length > 0" class="search-results">
         <view v-for="item in searchResults" :key="item.id" @click="navigateToEditItem(item)">
-          <text>{{ item.name }}</text>
+          <text class="item-name">{{ item.id }}</text>
         </view>
       </view>
       <view class="item-list">
         <view class="item" v-for="item in items" :key="item.id" @click="navigateToEditItem(item)">
-          <text>{{ item.name }}</text>
-          <text>{{ item.position }}</text>
-          <text>{{ item.quantity }}</text>
+          <text class="item-name">{{ item.id }}</text><br />
+          <text class="item-position">位置: [{{ item.position_x }}, {{ item.position_y }}, {{ item.position_z }}]</text><br />
+          <text class="item-quantity">数量: {{ item.quantity }}</text>
         </view>
       </view>
     </view>
 
+    <!-- 容器展示 -->
     <view v-if="currentTab === 'containers'">
       <view v-if="searchResults.length > 0" class="search-results">
         <view v-for="container in searchResults" :key="container.id" @click="navigateToContainerDetail(container)">
-          <text>{{ container.name }}</text>
+          <text class="container-name">{{ container.container_id }}</text>
         </view>
       </view>
       <view class="container-list">
         <view class="container" v-for="container in containers" :key="container.id" @click="navigateToContainerDetail(container)">
-          <text>{{ container.name }}</text>
-          <text>{{ container.items.length }} 个物品</text>
+          <text class="container-name">{{ container.container_id }}</text><br />
+          <text class="container-position">位置: [{{ container.position_x }}, {{ container.position_y }}, {{ container.position_z }}]</text><br />
+          <text class="container-items">包含 {{ container.item.length }} 个物品</text>
         </view>
       </view>
     </view>
 
+    <!-- 房间展示 -->
     <view v-if="currentTab === 'rooms'">
       <view v-if="searchResults.length > 0" class="search-results">
         <view v-for="room in searchResults" :key="room.id" @click="navigateToRoomDetail(room)">
-          <text>{{ room.name }}</text>
+          <text class="room-name">{{ room.name }}</text>
         </view>
       </view>
       <view class="room-list">
         <view class="room" v-for="room in rooms" :key="room.id" @click="navigateToRoomDetail(room)">
-          <text>{{ room.name }}</text>
-          <text>{{ room.containers.length }} 个容器</text>
+          <text class="room-name">{{ room.id }}</text><br />
+          <text class="room-containers">包含 {{ room.container.length }} 个容器</text>
         </view>
       </view>
     </view>
@@ -60,7 +67,7 @@
     <view @click="navigateToOptimizePage" class="floating-icon2">
       <u-icon name="integral" size="40" color="#c7ddff"></u-icon>
     </view>
-    <view @click="goAddup" class="floating-icon">
+    <view @click="goAddup(currentTabIndex)" class="floating-icon">
       <u-icon name="plus" size="40" color="#c7ddff"></u-icon>
     </view>
   </view>
@@ -70,7 +77,6 @@
 export default {
   data() {
     return {
-      infoList: [],
       searchQuery: '',
       searchResults: [],
       currentTab: 'items',
@@ -82,13 +88,14 @@ export default {
         { name: '容器' },
         { name: '房间' },
       ],
-      currentTabIndex: 0, // 0: items, 1: containers, 2: rooms
+      infoList: ['test1', 'test2'], // 滚动消息
+      currentTabIndex: 0 // 0: items, 1: containers, 2: rooms
     };
   },
   computed: {
     searchPlaceholder() {
-      return this.currentTab === 'items' ? '搜索物品...' :
-             this.currentTab === 'containers' ? '搜索容器...' : '搜索房间...';
+      return this.currentTabIndex === 0 ? '搜索物品...' :
+             this.currentTabIndex === 1 ? '搜索容器...' : '搜索房间...';
     }
   },
   mounted() {
@@ -98,6 +105,26 @@ export default {
   methods: {
     fetchNotices() {
       // 获取通知的API
+      uni.request({
+        url: '/api/fetchNotices', // 模拟后端接口URL  
+        success: (res) => {
+          if (res.data) {
+            this.infoList = res.data.data; // 假设这里是数组
+            console.log(res.data)
+          } else {
+            uni.showToast({
+              title: '获取通知失败',
+              icon: 'none'
+            });
+          }
+        },
+        fail: (err) => {
+          uni.showToast({
+            title: '网络请求失败',
+            icon: 'none'
+          });
+        }
+      });
     },
     fetchData() {
       this.getItems();
@@ -105,28 +132,86 @@ export default {
       this.getRooms();
     },
     getItems() {
-      // API调用获取物品
+      // 获取物品数据
+      uni.request({
+        url: '/api/query-item',
+        method: 'POST',
+        success: (res) => {
+          if (res.data && res.data.data) {
+            this.items = res.data.data.rows;
+          } else {
+            uni.showToast({
+              title: '获取物品失败',
+              icon: 'none'
+            });
+          }
+        },
+        fail: (err) => {
+          uni.showToast({
+            title: '网络请求失败',
+            icon: 'none'
+          });
+        }
+      });
     },
     getContainers() {
-      // API调用获取容器
+      // 获取容器数据
+      uni.request({
+        url: '/api/query-container',
+        method: 'POST',
+        success: (res) => {
+          if (res.data && res.data.data) {
+            this.containers = res.data.data.rows;
+          } else {
+            uni.showToast({
+              title: '获取容器失败',
+              icon: 'none'
+            });
+          }
+        },
+        fail: (err) => {
+          uni.showToast({
+            title: '网络请求失败',
+            icon: 'none'
+          });
+        }
+      });
     },
     getRooms() {
-      // API调用获取房间
+      // 获取房间数据
+      uni.request({
+        url: '/api/query-room',
+        method: 'POST',
+        success: (res) => {
+          if (res.data && res.data.data) {
+            this.rooms = res.data.data.rows;
+          } else {
+            uni.showToast({
+              title: '获取房间失败',
+              icon: 'none'
+            });
+          }
+        },
+        fail: (err) => {
+          uni.showToast({
+            title: '网络请求失败',
+            icon: 'none'
+          });
+        }
+      });
     },
     search() {
+      if (this.searchQuery.trim() === '') {
+        return;
+      }
+      
       if (this.currentTab === 'items') {
-        this.searchResults = this.items.filter(item => item.name.includes(this.searchQuery));
+        this.searchResults = this.items.filter(item => item.room.name.includes(this.searchQuery));
       } else if (this.currentTab === 'containers') {
-        this.searchResults = this.containers.filter(container => container.name.includes(this.searchQuery));
+        this.searchResults = this.containers.filter(container => String(container.container_id).includes(this.searchQuery));
       } else if (this.currentTab === 'rooms') {
         this.searchResults = this.rooms.filter(room => room.name.includes(this.searchQuery));
       }
-    },
-    changeTab(index) {
-      this.currentTabIndex = index;
-      this.currentTab = this.tabList[index].name.toLowerCase(); // 'items', 'containers', 'rooms'
-      this.searchResults = []; // 清空搜索结果
-      this.searchQuery = ''; // 清空搜索框
     },
     navigateToEditItem(item) {
       uni.navigateTo({ url: `/pages/index/editItem?id=${item.id}` });
@@ -140,15 +225,20 @@ export default {
     navigateToOptimizePage() {
       uni.navigateTo({ url: '/pages/index/optimize' });
     },
-    goAddup() {
-      uni.navigateTo({ url: '/pages/index/addup' });
-    },
-  },
+	goAddup(index) {
+	  uni.navigateTo({ url: `/pages/index/addup?currentTab=${index}` });
+	},
+    changeTab(index) {
+      this.currentTabIndex = index;
+      this.currentTab = index === 0 ? 'items' : index === 1 ? 'containers' : 'rooms';
+      this.searchResults = [];
+    }
+  }
 };
 </script>
 
 <style>
-.container {
+.tcontainer {
   padding: 20px;
 }
 
@@ -183,12 +273,6 @@ export default {
   margin-right: 5px; /* 调整按钮间距 */
 }
 
-.search-box .icon {
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-}
-
 .tab {
   display: flex;
   justify-content: space-around;
@@ -206,31 +290,35 @@ export default {
 }
 
 .tab button.active {
-  background-color: #42b983; /* 活动按钮的背景颜色 */
-  color: white;
+  background-color: #42b983; /* 激活的标签背景 */
+  color: white; /* 激活的标签文字颜色 */
+}
+
+.item-list, .container-list, .room-list {
+  margin: 10px 0;
+}
+
+.item, .container, .room {
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin: 10px 0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.item:hover, .container:hover, .room:hover {
+  background-color: #f0f0f0; /* 悬停效果 */
+}
+
+.item-name, .container-name, .room-name {
+  font-size: 18px;
   font-weight: bold;
 }
 
-.item-list, .area-list {
-  display: flex;
-  flex-wrap: wrap; /* 允许换行 */
-  gap: 10px; /* 添加间距 */
-}
-
-.item, .area {
-  flex: 1 1 calc(50% - 10px); /* 每行两个 */
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 10px; /* 圆角 */
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.area image, .item image {
-  width: 100px;
-  height: 100px;
-  margin-right: 10px;
+.item-position,.container-position, .room-position,.item-quantity, .container-items, .room-containers {
+  font-size: 14px;
+  color: #666;
 }
 
 .floating-icon2 {
@@ -248,7 +336,7 @@ export default {
 		z-index: 1000;
 		cursor: pointer;
 	}
-
+	
 .floating-icon {
 		position: fixed;
 		bottom: 80px;
