@@ -10,7 +10,10 @@
 		<br />
 		<view>
 			<p style="font-size: 10px;">解决不了的问题？/给我们的建议</p>
-			<u-input v-model="value" :type="type" :border="border" style="width: 100%; height: 80px; font-size: 16px;"/>
+			<div class="input-container">
+				<u-input v-model="value" :type="type" :border="border"
+					style="width: 90%; height: 80px; font-size: 16px; margin: 0 auto;" />
+			</div>
 			<u-button type="primary" style="width: 15%; height: 40px; font-size: 20px;">提交</u-button>
 		</view>
 

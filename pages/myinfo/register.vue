@@ -1,39 +1,39 @@
 <template>
-	<!-- 网页内容 -->
 	<view class="wrap">
-		<!-- 写一个表单form 可复制一个components用于代码提示-->
 		<u-form :model="user" ref="uForm">
-			<!-- 写item -->
-			<!-- 写姓名 -->
 			<u-form-item label-width="150" label="昵称" prop="xingming">
-				<u-input placeholder="请输入昵称" v-model="user.xingming" type="text"></u-input>
+				<u-input placeholder="请输入昵称" v-model="users.xingming" type="text"></u-input>
 			</u-form-item>
 			<!-- 写用户栏 -->
-			<u-form-item label-width="150" label="用户名" prop="zhanghao">
-				<u-input type="text" v-model="user.zhanghao" placeholder="请输入用户名"></u-input>
+			<u-form-item label-width="150" label="账号" prop="zhanghao">
+				<u-input type="text" v-model="users.username" placeholder="请输入账号"></u-input>
 			</u-form-item>
 			<!-- 写密码栏 -->
 			<u-form-item label-width="150" label="密码" prop="password">
-				<u-input :password-icon="true" type="password" v-model="user.mima" placeholder="请输⼊密码"></u-input>
+				<u-input :password-icon="true" type="password" v-model="users.mima" placeholder="请输入密码"></u-input>
 			</u-form-item>
 			<!-- 写密码栏 -->
 			<u-form-item label-width="150" label="确认密码" prop="Tpassword">
-				<u-input :password-icon="true" type="password" v-model="user.rmima" placeholder="请再次确认密码"></u-input>
+				<u-input :password-icon="true" type="password" v-model="users.rmima" placeholder="请再次确认密码"></u-input>
 			</u-form-item>
-			<!-- <u-form-item label-width="150" label="年龄" prop="age">
-				<u-input type="number" v-model="user.age" placeholder="请输入年龄"></u-input>
-			</u-form-item> -->
-			<!-- <u-form-item label-width="140" label-position="left" label="用户类别" prop="leibie">
-				<u-radio-group v-model="user.leibie" @change="radioGroupChange">
-					<u-radio @change="radioChange" v-for="(item, index) in list" :key="index" :name="item.val"
-						:disabled="item.disabled">
-						{{item.txt}}
-					</u-radio>
-				</u-radio-group>
-			</u-form-item> -->
+			<!-- 手机号 -->
+			<u-form-item label-width="130" label-position="left" label="电话" prop="phone">
+				<u-input :border="border" placeholder="请输入电话号码" v-model="users.phone" type="text"></u-input>
+			</u-form-item>
+			<view class="form-container">
+			<u-form-item label-width="0" label-position="left" class="verification-form-item">
+				<u-input :border="border" placeholder="请输入验证码" v-model="users.captcha" type="text"
+					class="verification-input"></u-input>
+				<u-button type="primary" @click="getVerificationCode" class="get-code-button">获取验证码</u-button>
+			</u-form-item>
+			    <!-- <view class="wrap1">
+			      <u-toast ref="uToast"></u-toast>
+			      <u-verification-code :seconds="seconds" @end="end" @start="start" ref="uCode" 
+			      @change="codeChange"></u-verification-code>
+			      <u-button @tap="getCode">{{tips}}</u-button>
+			    </view> -->
+			  </view>
 			<u-button @click="submit()">提交</u-button>
-			<!-- <u-link :href="href">帮助文档</u-link> -->
-			<!-- 前面加冒号，说明填写的是变量 -->
 		</u-form>
 	</view>
 </template>
@@ -43,49 +43,32 @@
 			return {
 				// 变量定义
 				border: true,
-				href: "http://www.uviewui.com",
-				user: {
-					id:'',
+				users: {
 					xingming: '',
-					zhanghao: '',
+					username: '',
 					mima: '',
 					rmima: '',
-					age: ''
-				},
-				list: [{
-						val: '1',
-						txt: "超级⽤户",
-						disabled: false
-					},
-					{
-						val: '2',
-						txt: "普通⽤户",
-						disabled: false
-					},
-					{
-						val: '3',
-						txt: "电影推介",
-						disabled: false
-					}
-				]
+					phone: "",
+					captcha: "",
+				}
 			}
 		},
 		methods: {
 			submit() {
-				if (this.user.mima != this.user.rmima) {
+				if (this.users.mima != this.users.rmima) {
 					this.$u.toast("两次输入密码不同")
 					return
 				}
 				console.log("密码检验通过，提交注册信息")
 				//如果成功，返回
 				uni.request({
-					url: "http://localhost:8090/doRegister",
-					data: this.user,
+					url: "/api/users",
+					data: this.users,
 					method: "POST", //与服务器代码保持一致
 					success: (res) => {
 						//输出结果
 						console.log(res.data.code)
-						if (res.data.code * 1 == 200) {
+						if (response.data.code === 1) {
 							//登陆成功
 							//存信息加回退
 							console.log("注册回退test"),

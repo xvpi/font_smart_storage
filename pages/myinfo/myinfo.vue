@@ -22,14 +22,8 @@
 							<div>请输入新昵称</div>
 						</template>
 						<template #default>
-							<div style="width: 100px; height: 10px; margin: 20px auto;">  
-							    <input v-model="newUsername" type="text" />  
-							</div>
-						</template>
-						<template #footer>
-							<div>
-								<button @click="confirmModal">确认</button>
-								<button @click="cancelModal">取消</button>
+							<div style="width: 100px; height: 10px; margin: 20px auto;">
+								<input v-model="newUsername" type="text" />
 							</div>
 						</template>
 					</u-modal>
@@ -51,6 +45,11 @@
 				<u-cell-group>
 					<u-cell-item icon="setting" title="设置" @click="goSetting()"></u-cell-item>
 					<u-cell-item icon="order" title="问题反馈" @click="goQuestion()"></u-cell-item>
+				</u-cell-group>
+			</view>
+			<view class="u-m-t-20">
+				<u-cell-group>
+					<u-cell-item icon="close" title="退出" @click="quit()"></u-cell-item>
 				</u-cell-group>
 			</view>
 		</view>
@@ -94,7 +93,6 @@
 	export default {
 		data() {
 			return {
-				pic: 'https://uviewui.com/common/logo.png',
 				show: false,
 				logined: false,
 				showModal: false,
@@ -154,36 +152,51 @@
 				this.showModal = true;
 			},
 			handleConfirm() {
-				// 处理确认逻辑  
-				console.log('确认按钮被点击', this.inputValue);
-				this.showModal = false;
+				// 构造请求体  
+				const requestBody = {
+					username: this.newUsername, 
+				};
+				// 发送更新用户信息的请求  
+				axios.post('/api/users/{user_id}', requestBody)
+					.then(response => {
+						// 处理成功的响应  
+						if (response.data.code === 1) {
+							this.showModal = false;
+							// 可能还需要更新其他数据，比如从响应中获取的新用户名等  
+							// this.currentUsername = response.data.data.username;  
+							alert(response.data.message); // 显示成功消息  
+						} else {
+							// 处理其他可能的成功代码（如果有的话）或未知错误  
+							alert('更新用户信息时发生未知错误');
+						}
+					})
+					.catch(error => {
+						// 处理请求错误  
+						if (error.response) { 
+							switch (error.response.status) {
+								case 400:  
+									alert(error.response.data.message);
+									break;
+								case 404:  
+									alert('用户未找到，但更新操作通常不应该返回404错误');
+									break;
+								case 500: 
+									alert('服务器内部错误，请稍后再试');
+									break;  
+								default:
+									alert('请求失败，状态码：' + error.response.status);
+							}
+						} else if (error.request) { 
+							alert('请求已发送，但未收到响应');
+						} else { 
+							alert('请求配置错误');
+						}
+					});
 			},
 			handleCancel() {
 				// 处理取消逻辑  
 				console.log('取消按钮被点击');
 				this.showModal = false;
-			},
-			confirmModal() {
-				// this.handleConfirm();
-				// 发送请求到后端更新昵称  
-				axios.put('/api/user', {
-						username: this.newUsername,
-						// 如果需要，还可以包含其他标识符，如用户ID  
-						// userId: this.userId // 假设您已经有一个用户ID变量  
-					})
-					.then(response => {
-						// 处理成功响应  
-						console.log('昵称更新成功:', response.data);
-						// 可以关闭模态框或进行其他UI更新  
-					})
-					.catch(error => {
-						// 处理错误响应  
-						console.error('昵称更新失败:', error);
-						// 可以显示错误消息或进行其他错误处理  
-					});
-			},
-			cancelModal() {
-				this.handleCancel();
 			},
 			quit() {
 				//退出清值
