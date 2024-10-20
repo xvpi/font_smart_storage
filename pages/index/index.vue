@@ -225,9 +225,15 @@ export default {
     navigateToOptimizePage() {
       uni.navigateTo({ url: '/pages/index/optimize' });
     },
+	
+	
+	
+	
+	
 	goAddup(index) {
 	  uni.navigateTo({ url: `/pages/index/addup?currentTab=${index}` });
-	},
+	
+	0},
     changeTab(index) {
       this.currentTabIndex = index;
       this.currentTab = index === 0 ? 'items' : index === 1 ? 'containers' : 'rooms';
