@@ -1,96 +1,107 @@
 <template>
-	<view class="wrap">
-		<u-form :model="user" ref="uForm">
-			<u-form-item label-width="150" label="昵称" prop="xingming">
-				<u-input placeholder="请输入昵称" v-model="users.xingming" type="text"></u-input>
-			</u-form-item>
-			<!-- 写用户栏 -->
-			<u-form-item label-width="150" label="账号" prop="zhanghao">
-				<u-input type="text" v-model="users.username" placeholder="请输入账号"></u-input>
-			</u-form-item>
-			<!-- 写密码栏 -->
-			<u-form-item label-width="150" label="密码" prop="password">
-				<u-input :password-icon="true" type="password" v-model="users.mima" placeholder="请输入密码"></u-input>
-			</u-form-item>
-			<!-- 写密码栏 -->
-			<u-form-item label-width="150" label="确认密码" prop="Tpassword">
-				<u-input :password-icon="true" type="password" v-model="users.rmima" placeholder="请再次确认密码"></u-input>
-			</u-form-item>
-			<!-- 手机号 -->
-			<u-form-item label-width="130" label-position="left" label="电话" prop="phone">
-				<u-input :border="border" placeholder="请输入电话号码" v-model="users.phone" type="text"></u-input>
-			</u-form-item>
-			<view class="form-container">
-			<u-form-item label-width="0" label-position="left" class="verification-form-item">
-				<u-input :border="border" placeholder="请输入验证码" v-model="users.captcha" type="text"
-					class="verification-input"></u-input>
-				<u-button type="primary" @click="getVerificationCode" class="get-code-button">获取验证码</u-button>
-			</u-form-item>
-			    <!-- <view class="wrap1">
-			      <u-toast ref="uToast"></u-toast>
-			      <u-verification-code :seconds="seconds" @end="end" @start="start" ref="uCode" 
-			      @change="codeChange"></u-verification-code>
-			      <u-button @tap="getCode">{{tips}}</u-button>
-			    </view> -->
-			  </view>
-			<u-button @click="submit()">提交</u-button>
-		</u-form>
-	</view>
+  <view class="container">
+    <u-form ref="form" :model="form" label-width="80">
+      <u-form-item label="用户名">
+        <u-input v-model="form.username" placeholder="请输入用户名" />
+      </u-form-item>
+      <u-form-item label="手机号">
+        <u-input v-model="form.phone" placeholder="请输入手机号" type="number" />
+      </u-form-item>
+      <u-form-item label="验证码">
+        <view class="captcha-container">
+          <u-input v-model="form.captcha" placeholder="请输入验证码" />
+          <u-button type="primary" @click="getCaptcha" :disabled="countdown > 0">
+            {{ countdown > 0 ? `${countdown}s` : '获取验证码' }}
+          </u-button>
+        </view>
+      </u-form-item>
+      <u-form-item label="密码">
+        <u-input v-model="form.password" placeholder="请输入密码" type="password" />
+      </u-form-item>
+      <u-button type="primary" @click="register">注册</u-button>
+    </u-form>
+  </view>
 </template>
+
 <script>
-	export default {
-		data() {
-			return {
-				// 变量定义
-				border: true,
-				users: {
-					xingming: '',
-					username: '',
-					mima: '',
-					rmima: '',
-					phone: "",
-					captcha: "",
-				}
-			}
-		},
-		methods: {
-			submit() {
-				if (this.users.mima != this.users.rmima) {
-					this.$u.toast("两次输入密码不同")
-					return
-				}
-				console.log("密码检验通过，提交注册信息")
-				//如果成功，返回
-				uni.request({
-					url: "/api/users",
-					data: this.users,
-					method: "POST", //与服务器代码保持一致
-					success: (res) => {
-						//输出结果
-						console.log(res.data.code)
-						if (response.data.code === 1) {
-							//登陆成功
-							//存信息加回退
-							console.log("注册回退test"),
-								uni.navigateBack()
-						} else {
-							//登陆失败
-							this.$u.toast("注册失败，请更换用户名尝试")
-						}
-					}
-				});
-			},
-			radioChange(e) {
-				console.log(e, "radio", this.user.leibie)
-			},
-			radioGroupChange(e) {
-				console.log(e, "group", this.user.leibie)
-			}
-		}
-	}
+export default {
+  data() {
+    return {
+      form: {
+        username: '',
+        phone: '',
+        password: '',
+        captcha: ''
+      },
+      countdown: 0
+    };
+  },
+  methods: {
+    async getCaptcha() {
+      if (!this.form.phone) {
+        return uni.showToast({ title: '请输入手机号', icon: 'none' });
+      }
+      try {
+        const [error, res] = await uni.request({
+          url: `http://napbad.com:8080/user/captcha/get?phone=${this.form.phone}`,
+          method: 'POST'
+        });
+        this.startCountdown();
+        uni.showToast({ title: '验证码已发送', icon: 'success' });
+		console.log('验证码响应:', res);
+      } catch (error) {
+        uni.showToast({ title: '验证码发送失败', icon: 'none' });
+      }
+    },
+    startCountdown() {
+      this.countdown = 60;
+      const timer = setInterval(() => {
+        this.countdown--;
+        if (this.countdown <= 0) clearInterval(timer);
+      }, 1000);
+    },
+    async register() {
+      if (!this.form.username || !this.form.phone || !this.form.password || !this.form.captcha) {
+        return uni.showToast({ title: '请填写完整信息', icon: 'none' });
+      }
+    
+      try {
+        const [error, res] = await uni.request({
+          url: 'http://napbad.com:8080/user/register',
+          method: 'POST',
+          header: { 'Content-Type': 'application/json' },
+          data: this.form
+        });
+    
+        console.log('注册响应:', res);
+    
+        if (res.statusCode === 200 && res.data.id) {
+          uni.showToast({ title: '注册成功，请登录', icon: 'success' });
+    
+          setTimeout(() => {
+            uni.reLaunch({
+              url: 'login' // 自动填充用户名
+            });
+          }, 1000);
+        } else {
+          uni.showToast({ title: res.data.message || '注册失败', icon: 'none' });
+        }
+      } catch (error) {
+        uni.showToast({ title: '请求失败，请检查网络', icon: 'none' });
+      }
+    }
+
+  }
+};
 </script>
+
 <style>
-	.u-demo-area {
-		cursor: pointer;
-	}
+.container {
+  padding: 20px;
+}
+.captcha-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 </style>

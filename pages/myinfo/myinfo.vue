@@ -15,7 +15,7 @@
 				</view>
 				<view class="u-flex-1">
 					<!-- 标签内使用变量 -->
-					<view class="u-font-18 u-p-b-20" @click="openModal">111</view>
+					<view class="u-font-18 u-p-b-20" @click="openModal">{{ user.username }}</view>
 					<u-modal v-model="showModal" :show-title="true" title="请输入新的昵称" :show-confirm-button="true"
 						:show-cancel-button="true" @confirm="handleConfirm" @cancel="handleCancel">
 						<template #title>
@@ -23,18 +23,12 @@
 						</template>
 						<template #default>
 							<div style="width: 100px; height: 10px; margin: 20px auto;">
-								<input v-model="newUsername" type="text" />
+								<input v-model="user.account" type="text" />
 							</div>
 						</template>
 					</u-modal>
-					<view class="u-font-14 u-tips-color">帐号:1112024</view>
+					<view class="u-font-14 u-tips-color">账号：{{ user.id }}</view>
 				</view>
-				<!-- <view class="u-m-l-10 u-p-10">
-					<u-icon name="scan" color="#969799" size="28"></u-icon>
-				</view> -->
-				<!-- <view class="u-m-l-10 u-p-10">
-					<u-icon name="arrow-right" color="#969799" size="28" @click="goRevise(yonghu.id)"></u-icon>
-				</view> -->
 			</view>
 			<view class="u-m-t-20">
 				<u-cell-group>
@@ -93,6 +87,13 @@
 	export default {
 		data() {
 			return {
+				user: {
+				        id: '',
+				        username: '',
+				        phone: '',
+				        email: '',
+				        avatar: ''
+				      },
 				show: false,
 				logined: false,
 				showModal: false,
@@ -100,29 +101,33 @@
 				newUsername: '',
 			}
 		},
-		onLoad() {},
+		onLoad() {
+			const userInfo = uni.getStorageSync('userInfo');
+			    if (userInfo) {
+			      this.user = JSON.parse(userInfo);
+				  this.logined=true;
+			    } else {
+			      uni.showToast({ title: '请先登录', icon: 'none' });
+			      this.logined=false;
+			    }
+			  },
 		onShow() {
-			console.log("我的信息页面展示了")
-			//userinfo有值说明登陆了
-			const value = uni.getStorageSync("userinfo")
-			console.log(value)
-			if (value) {
-				//有值，说明登录
-				console.log("登录状态")
-				//更新用户值
-				this.yonghu = value
-				this.logined = false
-				this.logined = true
-			} else {
-				this.logined = true
-			}
+			// console.log("我的信息页面展示了")
+			// //userinfo有值说明登陆了
+			// const value = uni.getStorageSync("userinfo")
+			// console.log(value)
+			// if (value) {
+			// 	//有值，说明登录
+			// 	console.log("登录状态")
+			// 	//更新用户值
+			// 	this.yonghu = value
+			// 	this.logined = false
+			// 	this.logined = true
+			// } else {
+			// 	this.logined = true
+			// }
 		},
 		methods: {
-			// 跳转
-			//封装：定义一个方法来执行一段代码
-			/*
-			 *方法名(参数){代码}
-			 */
 			goLogin() {
 				uni.navigateTo({
 					url: 'login'
@@ -152,7 +157,6 @@
 				this.showModal = true;
 			},
 			handleConfirm() {
-				// 构造请求体  
 				const requestBody = {
 					username: this.newUsername, 
 				};
