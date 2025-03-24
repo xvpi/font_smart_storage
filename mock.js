@@ -360,13 +360,22 @@ Mock.mock(/\/api\/rooms\/\d+/, 'get', (options) => {
       containers: [
         {
           id: Mock.mock('@integer(1, 10)'),
-          position_x: Mock.mock('@float(0, 50, 1, 2)'),
-          position_y: Mock.mock('@float(0, 50, 1, 2)'),
-          position_z: Mock.mock('@float(0, 50, 1, 2)'),
-          length: Mock.mock('@float(100, 500, 1, 2)'),
-          width: Mock.mock('@float(100, 500, 1, 2)'),
-          height: Mock.mock('@float(100, 500, 1, 2)')
-        }
+          position_x: Mock.mock('@float(0, 5, 1, 2)'),
+          position_y: Mock.mock('@float(0, 5, 1, 2)'),
+          position_z: Mock.mock('@float(0, 5, 1, 2)'),
+          length: Mock.mock('@float(10, 50, 1, 2)'),
+          width: Mock.mock('@float(10, 50, 1, 2)'),
+          height: Mock.mock('@float(10, 50, 1, 2)')
+        },
+		{
+		  id: Mock.mock('@integer(1, 10)'),
+		  position_x: Mock.mock('@float(-5, 5, 1, 2)'),
+		  position_y: Mock.mock('@float(-5, 5, 1, 2)'),
+		  position_z: Mock.mock('@float(-5, 5, 1, 2)'),
+		  length: Mock.mock('@float(1, 5, 1, 2)'),
+		  width: Mock.mock('@float(1, 5, 1, 2)'),
+		  height: Mock.mock('@float(1, 5, 1, 2)')
+		}
       ]
     }
   };
@@ -559,6 +568,35 @@ Mock.mock('/api/query-room', 'post', () => {
     },
     message: "房间查询成功"
   };
+});
+Mock.mock('/api/query-room2', 'post', () => {
+  return {
+  "code": 1,
+  "data": {
+    "rows": [{
+      "id": 1,
+      "name": "Some Room",
+      "length": 6000.0,
+      "width": 6000.0,
+      "height": 4000.0,
+      "positionX": 0.0,
+      "positionY": 0.0,
+      "positionZ": 0.0,
+      "container": [
+        {
+          "container_id": 1,
+          "position_x": 100.0,
+          "position_y": 100.0,
+          "position_z": 100.0,
+          "length": 2000.0,
+          "width": 2000.0,
+          "height": 2000.0
+        }
+      ]
+    }]
+  },
+  "message": "房间查询成功"
+};
 });
 
 // 查询容器信息

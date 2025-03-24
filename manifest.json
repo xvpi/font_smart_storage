@@ -66,6 +66,7 @@
         "setting" : {
             "urlCheck" : false
         },
+		"requiredBackgroundModes" : ["webgl"],
         "usingComponents" : true
     },
     "mp-alipay" : {
