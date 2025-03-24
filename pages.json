@@ -136,20 +136,6 @@
 			{
 				"navigationBarTitleText" : "编辑容器"
 			}
-		},
-		{
-			"path" : "pages/index/3Droom",
-			"style" : 
-			{
-				"navigationBarTitleText" : "房间三维图"
-			}
-		},
-		{
-			"path" : "pages/test",
-			"style" : 
-			{
-				"navigationBarTitleText" : ""
-			}
 		}
 	],
 	"globalStyle": {

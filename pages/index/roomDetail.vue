@@ -14,37 +14,6 @@
       <text>尺寸: {{ room.length }} x {{ room.width }} x {{ room.height }}</text><br />
     </view>
 
-    <view class="room-details" v-if="currentTabIndex === 0"> <!-- 图示 Tab -->
-      <a-scene class="scene">
-        <!-- 添加光源 -->
-        <a-light type="ambient" color="#FFF"></a-light>
-        <a-light type="directional" position="-1 1 1" intensity="0.5"></a-light>
-        <a-text value="点击并拖动物体" position="0 2 0" align="center"></a-text>
-        
-        <!-- 创建房间模型（透明部分 + 边缘线） -->
-        <a-box position="0 1 -5" depth="5" height="2" width="5" color="#4CC3D2" opacity="0.3"></a-box>
-        <a-box position="0 1 -5" depth="5" height="2" width="5" color="#000" opacity="0.1" wireframe></a-box> <!-- 边缘线 -->
-        
-        <a-box position="-1 0.5 -3" depth="1" height="1" width="1" color="#4CC3D2" draggable></a-box>
-        <a-box position="1 0.5 -3" depth="0.5" height="1" width="1" color="#EF2D5E" draggable></a-box>
-        <a-sphere position="0 1 -3" radius="0.5" color="#FFC65D" draggable></a-sphere>
-
-        <!-- 在房间内部添加不同颜色的容器 -->
-        <view v-for="container in room.containers" :key="container.id">
-          <a-box
-            :position="`${container.positionX} ${container.positionY} ${container.positionZ}`"
-            depth="0.5"
-            height="1"
-            width="1"
-            :color="getColor(container.id)"
-            draggable> <!-- 保留可拖拽 -->
-          </a-box>
-        </view>
-        
-        <!-- 添加摄像机 -->
-        <a-camera position="0 2.5 0"></a-camera>
-      </a-scene>
-    </view>
 
     <view class="room-details" v-if="currentTabIndex === 1"> <!-- 列表 Tab -->
       <view class="containers-section">
@@ -64,7 +33,7 @@
 </template>
 
 <script>
-import 'aframe'; // 引入 A-Frame
+
 import Mock from 'mockjs'; // 确保引入 Mock.js
 
 export default {
